@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-const main = require("./config/db");
+const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
 const authRouter = require('./routes/userAuth');
 const redisClient = require("./config/redis");
@@ -54,15 +54,17 @@ app.use("/solutions", require("./routes/solution.routes"));
 app.use("/notes", notesRouter);
 app.use("/profile", profileRouter);
 
-// connect DB and redist then start server
+// connect DB and redis then start server
 const initializeConnection = async () => {
     try {
-        await Promise.all([main(), redisClient.connect()])      // connect DB & redis
+        await Promise.all([connectDB(), redisClient.connect()])      // connect DB & redis
         console.log(chalk.green("DB Connected"));
 
-        app.listen(process.env.PORT, () => {
-            console.log(chalk.green(`Server running at http://localhost:${process.env.PORT}`));
-        })
+        if (require.main === module) {
+            app.listen(process.env.PORT, () => {
+                console.log(chalk.green(`Server running at http://localhost:${process.env.PORT}`));
+            })
+        }
     } catch (err) {
         console.log("Error: " + err);
     }
