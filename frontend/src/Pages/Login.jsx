@@ -128,7 +128,7 @@ function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-11 rounded-lg bg-gradient-to-r from-emerald-400 to-indigo-500 text-black font-semibold text-sm shadow-lg hover:opacity-90 hover:scale-[1.02] transition disabled:opacity-50 disabled:scale-100"
+              className="w-full h-11 rounded-lg bg-linear-to-r from-emerald-400 to-indigo-500 text-black font-semibold text-sm shadow-lg hover:opacity-90 hover:scale-[1.02] transition disabled:opacity-50 disabled:scale-100"
             >
               {loading ? (
                 <span className="inline-flex items-center gap-2">

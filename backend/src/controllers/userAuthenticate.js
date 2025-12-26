@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken")
 // const verifyToken = require("./googleAuthenticate");
 const generateOTP = require("../utils/generateOTP");
 const sendEmail = require("../utils/sendEmail");
-// const { generateUniqueUsername, sanitizeBase } = require("../utils/username");
+const { generateUniqueUsername, sanitizeBase } = require("../utils/username");
 /**
  * Ensure the given user document has a username.
  * If missing, generate a unique username from firstName or email local-part,
@@ -16,14 +16,14 @@ const sendEmail = require("../utils/sendEmail");
  * Why: This provides a lazy backfill for legacy accounts created before
  * the username field existed, so they get a public profile handle at next login.
  */
-// async function ensureUsernameForUser(user) {
-//     if (user.username) return user.username;
-//     const baseForUsername = sanitizeBase(user.firstName || (user.emailId || "").split("@")[0]);
-//     const username = await generateUniqueUsername(User, baseForUsername);
-//     user.username = username;
-//     await user.save();
-//     return username;
-// }
+async function ensureUsernameForUser(user) {
+    if (user.username) return user.username;
+    const baseForUsername = sanitizeBase(user.firstName || (user.emailId || "").split("@")[0]);
+    const username = await generateUniqueUsername(User, baseForUsername);
+    user.username = username;
+    await user.save();
+    return username;
+}
 
 
 
@@ -41,8 +41,9 @@ const register = async (req, res) => {
         req.body.role = "user";
 
         // assign a default username
-        // const baseForUsername = sanitizeBase(firstName || emailId.split("@")[0]);
-        // const username = await generateUniqueUsername(User, baseForUsername);
+        const baseForUsername = sanitizeBase(firstName || emailId.split("@")[0]);
+        const username = await generateUniqueUsername(User, baseForUsername);
+        req.body.username = username;
 
         const user = await User.create(req.body);       //! hash password before creating user profile
         const token = jwt.sign({ _id: user._id, emailId: emailId, role: "user" }, process.env.JWT_KEY, { expiresIn: 3600 });
@@ -52,7 +53,7 @@ const register = async (req, res) => {
             emailId: user.emailId,
             _id: user._id,
             role: user.role,
-            // username: user.username
+            username: user.username
         }
 
 
@@ -86,7 +87,7 @@ const login = async (req, res) => {
         }
 
         // Lazy backfill: assign a username if this legacy user doesn't have one yet
-        // await ensureUsernameForUser(user);
+        await ensureUsernameForUser(user);
 
         const reply = {     // only these data will be sent to frontend
             firstName: user.firstName,
@@ -95,7 +96,7 @@ const login = async (req, res) => {
             age: user.age,
             _id: user._id,
             role: user.role,
-            // username: user.username,
+            username: user.username,
             problemSolved: user.problemSolved,
             isEmailVerified: user.isEmailVerified,
             hasPassword: !!user.password
@@ -481,4 +482,4 @@ const manageAccounts = async (req, res) => {
 // module.exports = { register, login, logout, adminRegister, deleteProfile, updateProfile, changePassword, googleSignIn, verifyEmail, manageAccounts, sendVerificationOtp }
 
 
-module.exports = { register, login, logout, adminRegister, deleteProfile, updateProfile, changePassword , verifyEmail, manageAccounts, sendVerificationOtp }
+module.exports = { register, login, logout, adminRegister, deleteProfile, updateProfile, changePassword, verifyEmail, manageAccounts, sendVerificationOtp }
