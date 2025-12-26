@@ -1,6 +1,6 @@
 const express = require("express");
 const authRouter = express.Router();
-const { register, login, logout, adminRegister, deleteProfile, updateProfile, changePassword, googleSignIn, verifyEmail, manageAccounts, sendVerificationOtp } = require("../controllers/userAuthenticate");
+const { register, login, logout, adminRegister, deleteProfile, updateProfile, changePassword, verifyEmail, manageAccounts, sendVerificationOtp } = require("../controllers/userAuthenticate");
 const userMiddleware = require("../middleware/userMiddleware");
 const adminMiddleware = require("../middleware/adminMiddleware");
 
@@ -32,7 +32,7 @@ authRouter.put("/update", userMiddleware, updateProfile);
 authRouter.post("/changepassword", userMiddleware, changePassword);
 
 // google signIn/signUp
-authRouter.post("/google-signin", googleSignIn);
+//authRouter.post("/google-signin", googleSignIn);
 
 // get all users
 authRouter.get("/getAllUsers", adminMiddleware, manageAccounts);

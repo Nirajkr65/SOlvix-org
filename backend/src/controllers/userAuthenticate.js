@@ -4,10 +4,10 @@ const Submission = require("../models/submission");
 const validate = require("../utils/validator")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
-const verifyToken = require("./googleAuthenticate");
+// const verifyToken = require("./googleAuthenticate");
 const generateOTP = require("../utils/generateOTP");
 const sendEmail = require("../utils/sendEmail");
-const { generateUniqueUsername, sanitizeBase } = require("../utils/username");
+// const { generateUniqueUsername, sanitizeBase } = require("../utils/username");
 /**
  * Ensure the given user document has a username.
  * If missing, generate a unique username from firstName or email local-part,
@@ -41,10 +41,10 @@ const register = async (req, res) => {
         req.body.role = "user";
 
         // assign a default username
-        const baseForUsername = sanitizeBase(firstName || emailId.split("@")[0]);
-        const username = await generateUniqueUsername(User, baseForUsername);
+        // const baseForUsername = sanitizeBase(firstName || emailId.split("@")[0]);
+        // const username = await generateUniqueUsername(User, baseForUsername);
 
-        const user = await User.create({ ...req.body, username });       //! hash password before creating user profile
+        const user = await User.create(req.body);       //! hash password before creating user profile
         const token = jwt.sign({ _id: user._id, emailId: emailId, role: "user" }, process.env.JWT_KEY, { expiresIn: 3600 });
 
         const reply = {
@@ -52,7 +52,7 @@ const register = async (req, res) => {
             emailId: user.emailId,
             _id: user._id,
             role: user.role,
-            username: user.username
+            // username: user.username
         }
 
 
@@ -95,7 +95,7 @@ const login = async (req, res) => {
             age: user.age,
             _id: user._id,
             role: user.role,
-            username: user.username,
+            // username: user.username,
             problemSolved: user.problemSolved,
             isEmailVerified: user.isEmailVerified,
             hasPassword: !!user.password
@@ -288,79 +288,79 @@ const changePassword = async (req, res) => {
 }
 
 
-const googleSignIn = async (req, res) => {
-    try {
-        const { token } = req.body;
-        const payload = await verifyToken(token);
+// const googleSignIn = async (req, res) => {
+//     try {
+//         const { token } = req.body;
+//         const payload = await verifyToken(token);
 
-        if (!payload) {
-            return res.status(401).json({
-                message: "Token verification failed"
-            })
-        }
+//         if (!payload) {
+//             return res.status(401).json({
+//                 message: "Token verification failed"
+//             })
+//         }
 
-        const email = payload.email;
-        const firstName = payload.name;
+//         const email = payload.email;
+//         const firstName = payload.name;
 
-        // check if user exists
-        // console.log("Checking user...");
-        let user = await User.findOne({ emailId: email });
-        // console.log("User found?", !!user);
+//         // check if user exists
+//         // console.log("Checking user...");
+//         let user = await User.findOne({ emailId: email });
+//         // console.log("User found?", !!user);
 
-        if (!user) {
-            // console.log("Creating new user...");
-            const baseForUsername = sanitizeBase(firstName || email.split("@")[0]);
-            const username = await generateUniqueUsername(User, baseForUsername);
-            user = await User.create({
-                firstName,
-                emailId: email,
-                authProvider: "google",
-                password: null,
-                username
-            });
-            // console.log("User created:", user._id);
-        }
-        // Backfill username for existing google accounts without username
-        if (!user.username) {
-            const baseForUsername = sanitizeBase(firstName || email.split("@")[0]);
-            user.username = await generateUniqueUsername(User, baseForUsername);
-            await user.save();
-        }
+//         if (!user) {
+//             // console.log("Creating new user...");
+//             const baseForUsername = sanitizeBase(firstName || email.split("@")[0]);
+//             const username = await generateUniqueUsername(User, baseForUsername);
+//             user = await User.create({
+//                 firstName,
+//                 emailId: email,
+//                 authProvider: "google",
+//                 password: null,
+//                 username
+//             });
+//             // console.log("User created:", user._id);
+//         }
+//         // Backfill username for existing google accounts without username
+//         if (!user.username) {
+//             const baseForUsername = sanitizeBase(firstName || email.split("@")[0]);
+//             user.username = await generateUniqueUsername(User, baseForUsername);
+//             await user.save();
+//         }
 
-        // generate YOUR JWT
-        const jwtToken = jwt.sign(
-            { _id: user._id, emailId: user.emailId, role: user.role },
-            process.env.JWT_KEY,
-            { expiresIn: "1h" }
-        );
-        // console.log("User from DB", user);
+//         // generate YOUR JWT
+//         const jwtToken = jwt.sign(
+//             { _id: user._id, emailId: user.emailId, role: user.role },
+//             process.env.JWT_KEY,
+//             { expiresIn: "1h" }
+//         );
+//         // console.log("User from DB", user);
 
-        res.cookie("token", jwtToken, { maxAge: 3600 * 1000, sameSite: 'none', secure: true })
+//         res.cookie("token", jwtToken, { maxAge: 3600 * 1000, sameSite: 'none', secure: true })
 
-        res.status(200).json({
-            message: "Google Sign-In successful",
-            user: {
-                _id: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                emailId: user.emailId,
-                age: user.age,
-                role: user.role,
-                username: user.username,
-                problemSolved: user.problemSolved,
-                isEmailVerified: user.isEmailVerified,
-                hasPassword: !!user.password
-            },
-        });
+//         res.status(200).json({
+//             message: "Google Sign-In successful",
+//             user: {
+//                 _id: user._id,
+//                 firstName: user.firstName,
+//                 lastName: user.lastName,
+//                 emailId: user.emailId,
+//                 age: user.age,
+//                 role: user.role,
+//                 username: user.username,
+//                 problemSolved: user.problemSolved,
+//                 isEmailVerified: user.isEmailVerified,
+//                 hasPassword: !!user.password
+//             },
+//         });
 
-    } catch (err) {
-        console.error("Google Algo Error", err);
-        res.status(401).json({
-            message: "Invalid Google token",
-            error: err.message,
-        });
-    }
-};
+//     } catch (err) {
+//         console.error("Google Algo Error", err);
+//         res.status(401).json({
+//             message: "Invalid Google token",
+//             error: err.message,
+//         });
+//     }
+// };
 
 const verifyEmail = async (req, res) => {
     try {
@@ -478,4 +478,7 @@ const manageAccounts = async (req, res) => {
     }
 }
 
-module.exports = { register, login, logout, adminRegister, deleteProfile, updateProfile, changePassword, googleSignIn, verifyEmail, manageAccounts, sendVerificationOtp }
+// module.exports = { register, login, logout, adminRegister, deleteProfile, updateProfile, changePassword, googleSignIn, verifyEmail, manageAccounts, sendVerificationOtp }
+
+
+module.exports = { register, login, logout, adminRegister, deleteProfile, updateProfile, changePassword , verifyEmail, manageAccounts, sendVerificationOtp }
