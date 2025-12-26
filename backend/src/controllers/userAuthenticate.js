@@ -16,14 +16,14 @@ const { generateUniqueUsername, sanitizeBase } = require("../utils/username");
  * Why: This provides a lazy backfill for legacy accounts created before
  * the username field existed, so they get a public profile handle at next login.
  */
-async function ensureUsernameForUser(user) {
-    if (user.username) return user.username;
-    const baseForUsername = sanitizeBase(user.firstName || (user.emailId || "").split("@")[0]);
-    const username = await generateUniqueUsername(User, baseForUsername);
-    user.username = username;
-    await user.save();
-    return username;
-}
+// async function ensureUsernameForUser(user) {
+//     if (user.username) return user.username;
+//     const baseForUsername = sanitizeBase(user.firstName || (user.emailId || "").split("@")[0]);
+//     const username = await generateUniqueUsername(User, baseForUsername);
+//     user.username = username;
+//     await user.save();
+//     return username;
+// }
 
 
 
