@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
-const connectDB = require("./config/db");
+const main = require("./config/db");
 const cookieParser = require("cookie-parser");
 const authRouter = require('./routes/userAuth');
 const redisClient = require("./config/redis");
@@ -57,7 +57,7 @@ app.use("/profile", profileRouter);
 // connect DB and redis then start server
 const initializeConnection = async () => {
     try {
-        await Promise.all([connectDB(), redisClient.connect()])      // connect DB & redis
+        await Promise.all([main(), redisClient.connect()])      // connect DB & redis
         console.log(chalk.green("DB Connected"));
 
         if (require.main === module) {
