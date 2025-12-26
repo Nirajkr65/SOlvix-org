@@ -120,7 +120,7 @@ const ChatAI = ({ problem, selectedLanguage }) => {
             <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center mb-4 border border-white/5">
               <Sparkles className="w-8 h-8 text-purple-400" />
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">CodeNexus AI</h3>
+            <h3 className="text-lg font-bold text-white mb-2">SOLVIX AI</h3>
             <p className="text-sm text-zinc-400 max-w-xs">
               I can help you understand the problem, debug your code, or suggest optimizations.
             </p>

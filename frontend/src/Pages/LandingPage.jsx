@@ -15,7 +15,7 @@ import {
 
 /**
  * LandingPage Component
- * Public-facing entry point for CodeNexus.
+ * Public-facing entry point for SOLVIX.
  */
 const LandingPage = () => {
     return (

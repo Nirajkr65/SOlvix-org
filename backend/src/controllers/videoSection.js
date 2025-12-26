@@ -24,7 +24,7 @@ const generateUploadSignature = async (req, res) => {
 
         // Generate unique public_id for the video
         const timestamp = Math.round(new Date().getTime() / 1000);
-        const publicId = `CodeNexus-solution/${problemId}/${userId}_${timestamp}`;
+        const publicId = `SOLVIX-solution/${problemId}/${userId}_${timestamp}`;
 
 
         // upload parameter
