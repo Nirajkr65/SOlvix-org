@@ -1,138 +1,69 @@
-# generate random jwt secret key:
-    CMD:  node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"  
-    run in terminal(website: https://dev.to/tkirwa/generate-a-random-jwt-secret-key-39j4)
+"SOLVIX isn't just a platform; it's your 24/7 intelligent coding mentor."
 
+🌟 Overview
 
+**SOLVIX** is a next-generation competitive programming platform designed to bridge the gap between learning and mastery. Built with performance and user experience at its core, it combines a powerful coding environment with cutting-edge AI assistance to provide a seamless practice arena for developers of all levels.
 
-# get language id in judge0:
-    https://ce.judge0.com/languages/
+Whether you're debugging a complex algorithm or learning a new data structure, SOLVIX empowers you with real-time feedback, editorial video insights, and an intelligent AI tutor that adapts to your needs.
 
-# judge0 documentation:
-    https://ce.judge0.com/
+---
 
-# batch submission
-    https://ce.judge0.com/#submissions-submission-post
-    const axios = require('axios');
+## ✨ Key Features
 
-const options = {
-  method: 'POST',
-  url: 'https://judge0-ce.p.rapidapi.com/submissions/batch',
-  params: {
-    base64_encoded: 'true'
-  },
-  headers: {
-    'x-rapidapi-key': '63104b9bf3msh8cd90f05a1f9f61p118226jsne962255f49d0',
-    'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
-    'Content-Type': 'application/json'
-  },
-  data: {
-    submissions: [
-      {
-        language_id: 46,
-        source_code: 'ZWNobyBoZWxsbyBmcm9tIEJhc2gK'
-      },
-      {
-        language_id: 71,
-        source_code: 'cHJpbnQoImhlbGxvIGZyb20gUHl0aG9uIikK'
-      },
-      {
-        language_id: 72,
-        source_code: 'cHV0cygiaGVsbG8gZnJvbSBSdWJ5IikK'
-      }
-    ]
-  }
-};
+### 🧠 AI-Powered Assistance
+- **Integrated Google Gemini AI**: Stuck on a problem? Get context-aware hints, logic explanations, and debugging help without ever leaving the editor.
+- **Smart suggestions**: The AI analyzes your code context to provide relevant optimization tips.
 
-async function fetchData() {
-	try {
-		const response = await axios.request(options);
-		console.log(response.data);
-	} catch (error) {
-		console.error(error);
-	}
-}
+### ⚡ Real-Time Code Execution
+- **Multi-Language Support**: Run code instantly in **C++, Java, and JavaScript**.
+- **Judge0 Integration**: Leverages the robust Judge0 API for fast, secure, and accurate code evaluation against test cases.
 
-fetchData();
+### 📚 Immersive Learning Experience
+- **Editorial Video Player**: Integrated **Mux Player** for high-quality video editorials and concept breakdowns.
+- **Rich Text Editor**: Powered by **Monaco Editor** (VS Code's core) for a familiar and powerful coding experience.
+- **Activity Heatmaps**: Visualizes your daily coding consistency to keep you motivated.
 
-# status id
-    [
-  {
-    "id": 1,
-    "description": "In Queue"
-  },
-  {
-    "id": 2,
-    "description": "Processing"
-  },
-  {
-    "id": 3,
-    "description": "Accepted"
-  },
-  {
-    "id": 4,
-    "description": "Wrong Answer"
-  },
-  {
-    "id": 5,
-    "description": "Time Limit Exceeded"
-  },
-  {
-    "id": 6,
-    "description": "Compilation Error"
-  },
-  {
-    "id": 7,
-    "description": "Runtime Error (SIGSEGV)"
-  },
-  {
-    "id": 8,
-    "description": "Runtime Error (SIGXFSZ)"
-  },
-  {
-    "id": 9,
-    "description": "Runtime Error (SIGFPE)"
-  },
-  {
-    "id": 10,
-    "description": "Runtime Error (SIGABRT)"
-  },
-  {
-    "id": 11,
-    "description": "Runtime Error (NZEC)"
-  },
-  {
-    "id": 12,
-    "description": "Runtime Error (Other)"
-  },
-  {
-    "id": 13,
-    "description": "Internal Error"
-  },
-  {
-    "id": 14,
-    "description": "Exec Format Error"
-  }
-]
+### 🛡️ Secure & Scalable Architecture
+- **Robust Authentication**: Secure login via **JWT**.
+- **High Performance**: **Redis** caching ensures lightning-fast data retrieval and session management.
+- **Cloud Media**: Optimized media storage and delivery using **Cloudinary**.
 
-# axios
+---
 
-# page loading limits
-  syntax: await Problem.find().skip().limit()
-    const page = 2;
-    const limit = 10;
-    const skip = (page - 1) * limit;
+## 🛠️ Tech Stack Used in this Project:
 
-    filter:
-      await Problem.find({difficulty: "easy", tags: "array"})
+**Frontend** (Client-Side)
 
-      await Problem.find({
-        votes: {$gte : 100},
-        tags: {$in : ["array", "hashmap"]}
-      })
+Core Framework: React 19 (Latest)
+Build Tool: Vite
+State Management: Redux Toolkit & React-Redux
+Styling: Tailwind CSS v4, DaisyUI (Component Library)
+Routing: React Router
+Form Handling: React Hook Form + Zod (Validation)
+Code Editor: Monaco Editor (The engine that powers VS Code)
+Video Player: Mux Player & React Player
+HTTP Client: Axios
+Authentication: Google OAuth 2.0 (@react-oauth/google)
+Visualization: React Calendar Heatmap
+Icons: Lucide React & FontAwesome
 
+**Backend** (Server-Side)
 
-    give all operator like: $gte, $in,, etc
+Runtime: Node.js
+Framework: Express.js
+Database ODM: Mongoose (for MongoDB)
+Caching: Redis
+AI Integration: Google Gemini SDK (@google/genai)
+Media Management: Cloudinary
+Authentication: JWT (JSON Web Tokens), Bcrypt (Password Hashing)
+Email Services: Resend & Nodemailer.
 
+**External APIs & Services**
 
+Database: MongoDB (Atlas or Local)
+Code Execution Engine: Judge0 (via RapidAPI)
+AI Model: Google Gemini (Pro/Flash models)
+Cloud Storage: Cloudinary (for images/videos)
 
-    google OAuth key :  941434220306-sdnan53r9l0rjbbe381qnlcl4cvaatk3.apps.googleusercontent.com
+## For Recruiters/Viewers
+"This project demonstrates my ability to integrate complex third-party services (AI, Code Execution Engines) into a cohesive, user-friendly full-stack application. It tackles real-world challenges like latency (managed via Redis) and security (JWT/OAuth), making it a production-grade prototype."
