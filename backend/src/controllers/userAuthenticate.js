@@ -86,7 +86,7 @@ const login = async (req, res) => {
         }
 
         // Lazy backfill: assign a username if this legacy user doesn't have one yet
-        await ensureUsernameForUser(user);
+        // await ensureUsernameForUser(user);
 
         const reply = {     // only these data will be sent to frontend
             firstName: user.firstName,
