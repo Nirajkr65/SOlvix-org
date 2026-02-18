@@ -217,7 +217,7 @@ const LandingPage = () => {
                             <span>&copy; {new Date().getFullYear()} SOLVIX. All rights reserved.</span>
                             <span className="hidden md:block w-1 h-1 bg-zinc-700 rounded-full"></span>
                             <span className="flex items-center gap-1">
-                                Created by <a href="https://rajverma./" target="_blank" rel="noopener noreferrer" className="text-emerald-400 font-medium hover:underline transition-all">Niraj</a>
+                                Created by <a href="https://portfolio-niraj65.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-emerald-400 font-medium hover:underline transition-all">Niraj</a>
                             </span>
                         </div>
                         <div className="flex gap-6">
