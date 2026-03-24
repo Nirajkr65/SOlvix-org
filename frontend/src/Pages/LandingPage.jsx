@@ -37,9 +37,9 @@ const LandingPage = () => {
                         <span>The Future of Coding Prep is Here</span>
                     </div>
 
-                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
+                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-linear-to-b from-white to-white/60 bg-clip-text text-transparent">
                         Master Algorithms. <br className="hidden md:block" />
-                        <span className="bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
+                        <span className="bg-linear-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
                             Built for Engineers.
                         </span>
                     </h1>
