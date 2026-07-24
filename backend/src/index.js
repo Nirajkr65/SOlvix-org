@@ -57,8 +57,16 @@ app.use("/profile", profileRouter);
 // connect DB and redis then start server
 const initializeConnection = async () => {
     try {
-        await Promise.all([main(), redisClient.connect()])      // connect DB & redis
+        await main();
         console.log(chalk.green("DB Connected"));
+
+        try {
+            await redisClient.connect();
+            console.log(chalk.green("Redis Connected"));
+        } catch (err) {
+            console.warn(chalk.yellow("Redis unavailable. Server will start without token blocklist support."));
+            console.warn(chalk.yellow(err.message));
+        }
 
         if (require.main === module) {
             app.listen(process.env.PORT, () => {

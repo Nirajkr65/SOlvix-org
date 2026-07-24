@@ -27,6 +27,7 @@ function Login() {
   const { isAuthenticated, loading } = useSelector(
     (state) => state.auth
   );
+  const error = useSelector((state) => state.auth.error);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -139,6 +140,11 @@ function Login() {
                 "Sign In"
               )}
             </button>
+            {error && (
+              <p className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+                {error}
+              </p>
+            )}
           </form>
         </div>
 

@@ -24,10 +24,12 @@ const userMiddleware = async (req, res, next) => {
         }
 
         // now check is user present in redis blocklist or not
-        const isBlocked = await redisClient.exists(`token:${token}`);
+        if (redisClient.isReady) {
+            const isBlocked = await redisClient.exists(`token:${token}`);
 
-        if(isBlocked) {
-            throw new Error("Invalid Token");
+            if(isBlocked) {
+                throw new Error("Invalid Token");
+            }
         }
 
         req.result = result;
@@ -39,4 +41,3 @@ const userMiddleware = async (req, res, next) => {
 }
 
 module.exports = userMiddleware;
-

@@ -30,6 +30,7 @@ function SignUp() {
   const { isAuthenticated, loading } = useSelector(
     (state) => state.auth
   );
+  const error = useSelector((state) => state.auth.error);
 
   const {
     register,
@@ -157,6 +158,11 @@ function SignUp() {
                 "Create Account"
               )}
             </button>
+            {error && (
+              <p className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+                {error}
+              </p>
+            )}
           </form>
         </div>
 

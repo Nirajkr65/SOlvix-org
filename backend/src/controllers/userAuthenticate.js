@@ -123,8 +123,10 @@ const logout = async (req, res) => {
         const payload = jwt.decode(token);      // get payload using decode()
 
         // todo: add to redis to block this token
-        await redisClient.set(`token:${token}`, "Blocked");
-        await redisClient.expireAt(`token:${token}`, payload.exp)       // in payload expiry of token is present
+        if (redisClient.isReady) {
+            await redisClient.set(`token:${token}`, "Blocked");
+            await redisClient.expireAt(`token:${token}`, payload.exp)       // in payload expiry of token is present
+        }
 
         res.cookie("token", null, { expires: new Date(Date.now()), sameSite: 'none', secure: true });
         res.send("Logged Out Successfully");

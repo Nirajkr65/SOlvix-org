@@ -2,6 +2,16 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosClient from './utils/axiosClient';
 import axios from 'axios';
 
+const getErrorMessage = (error, fallback) => {
+    const data = error.response?.data;
+
+    if (typeof data === "string") {
+        return data.replace(/^Error:\s*/, "") || fallback;
+    }
+
+    return data?.message || error.message || fallback;
+};
+
 export const registerUser = createAsyncThunk(
     'auth/register',    // action
     async (userData, { rejectWithValue }) => {        // on submitted form data will be sent to userData
@@ -9,7 +19,7 @@ export const registerUser = createAsyncThunk(
             const response = await axiosClient.post('/user/register', userData);        // post request to /user/register
             return response.data.user;      // sent data to payload
         } catch (error) {
-            return rejectWithValue(error.response?.data?.message || error.message || "Registration failed");
+            return rejectWithValue(getErrorMessage(error, "Registration failed"));
         }
     }
 )
@@ -21,7 +31,7 @@ export const loginUser = createAsyncThunk(
             const response = await axiosClient.post('/user/login', credentials);
             return response.data.user;
         } catch (error) {
-            return rejectWithValue(error.response?.data?.message || error.message || "Login failed");
+            return rejectWithValue(getErrorMessage(error, "Login failed"));
         }
     }
 )
@@ -164,7 +174,7 @@ const authSlice = createSlice({
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload?.message || "Something went wrong";
+                state.error = action.payload || "Something went wrong";
                 state.isAuthenticated = false;
                 state.user = null;
             })
@@ -181,7 +191,7 @@ const authSlice = createSlice({
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload?.message || "Something went wrong";
+                state.error = action.payload || "Something went wrong";
                 state.isAuthenticated = false;
                 state.user = null;
             })
