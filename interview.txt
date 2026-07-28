@@ -1,0 +1,478 @@
+SOLVIX INTERVIEW QUESTIONS AND ANSWERS
+======================================
+
+IMPORTANT TOP QUESTIONS
+=======================
+
+1. How is SOLVIX different from LeetCode?
+
+LeetCode is mainly focused on solving coding problems and preparing for interviews at a large scale. SOLVIX is built as a personalized learning-focused platform. Along with problem solving, it provides AI-guided help, private notes, discussions, community solutions, editorials, video explanations, public profiles, activity tracking, and admin-controlled problem creation.
+
+The main difference is that SOLVIX is not only a judge platform. It is designed as a complete learning environment where a user can practice, understand, revise, discuss, and track progress in one place.
+
+
+2. Why would people use SOLVIX over other coding platforms?
+
+People would use SOLVIX because it combines multiple learning tools into one platform. A user does not need to separately use a code editor, AI chatbot, notes app, discussion forum, and progress tracker. SOLVIX gives all of these in a single workflow while solving a problem.
+
+For students and beginners, this is useful because they often need guidance, hints, explanations, and revision support, not just a pass/fail result. SOLVIX focuses more on learning support and user progress than only competitive ranking.
+
+
+3. What extra things does SOLVIX provide that LeetCode may not provide in the same way?
+
+SOLVIX provides:
+
+- AI assistant connected to the current problem context.
+- Private problem-wise notes for revision.
+- Integrated activity heatmap and public profile stats.
+- Problem discussions and community solutions.
+- Admin-managed solution video uploads.
+- Editorial support.
+- Custom admin panel for creating, updating, and deleting problems.
+- Reference solution validation before saving a problem.
+- A complete full-stack learning system that can be customized by the owner.
+
+LeetCode has many advanced features, but SOLVIX is different because it is customizable, learning-focused, and built as a complete project where every module is controlled by our own frontend, backend, database, and external integrations.
+
+
+4. How does code execution happen using Judge0?
+
+Code execution happens through the Judge0 API.
+
+Flow:
+
+1. User writes code in the Monaco editor.
+2. User clicks Run or Submit.
+3. Frontend sends code, selected language, and problem id to the backend.
+4. Backend fetches the problem test cases from MongoDB.
+5. Backend maps the selected language to Judge0 language id.
+6. Backend sends a batch submission request to Judge0 with source code, language id, input, and expected output.
+7. Judge0 returns tokens for each submitted test case.
+8. Backend polls Judge0 using those tokens until execution is complete.
+9. Judge0 returns output, status, runtime, memory, and errors if any.
+10. Backend compares results and sends final response to frontend.
+
+For Run, visible test cases are used and result is not saved as a final accepted submission.
+For Submit, hidden test cases are used and the submission result is saved in MongoDB.
+
+
+1. What is SOLVIX?
+
+SOLVIX is a full-stack competitive programming and coding practice platform. It allows users to register, solve coding problems, run and submit code, track progress, ask an AI assistant for help, write notes, discuss problems, share solutions, and view profile statistics. Admins can create and manage problems and upload solution videos.
+
+
+2. What problem does this project solve?
+
+It solves the problem of fragmented coding practice. Usually students need separate tools for coding, note-taking, AI help, discussions, and progress tracking. SOLVIX combines all these into one platform.
+
+
+3. What tech stack is used in this project?
+
+Frontend:
+React, Vite, Redux Toolkit, Tailwind CSS, React Router, React Hook Form, Zod, Monaco Editor, Axios.
+
+Backend:
+Node.js, Express.js, MongoDB, Mongoose, JWT, bcrypt, Redis, cookie-parser, CORS.
+
+External services:
+Judge0 for code execution, Google Gemini for AI assistance, Cloudinary for video uploads, and email/OTP services for verification.
+
+
+4. Why did you choose React for the frontend?
+
+React is suitable because the project has many interactive UI states: authentication, filters, code editor, tabs, AI chat, notes, and submission results. React components make the UI modular and reusable.
+
+
+5. Why did you use Redux Toolkit?
+
+Redux Toolkit is used for global state management. Authentication state, current user data, chat messages, and notes need to be accessed across multiple components. Redux avoids prop drilling and keeps async API handling organized through createAsyncThunk.
+
+
+6. What is the role of axiosClient.js?
+
+axiosClient.js creates a centralized Axios instance. It stores the backend base URL from VITE_API_BASE_URL, sets Content-Type to application/json, enables withCredentials for cookies, and defines a request timeout. This avoids repeating Axios configuration in every component.
+
+
+7. How does user registration work?
+
+When a user submits the signup form:
+
+1. Frontend validates input using Zod.
+2. registerUser Redux thunk sends POST /user/register.
+3. Backend validates fields.
+4. Password is hashed using bcrypt.
+5. A unique username is generated.
+6. User is saved in MongoDB.
+7. JWT token is created.
+8. Token is sent as an HTTP cookie.
+9. Frontend stores user data in Redux and redirects to /problems.
+
+
+8. Why do you hash passwords?
+
+Passwords are hashed so the original password is never stored in the database. Even if the database is leaked, attackers cannot directly see user passwords. This project uses bcrypt for secure password hashing.
+
+
+9. What is JWT used for?
+
+JWT is used to verify authenticated users. After login or registration, the backend signs a token containing user id, email, and role. This token is sent in a cookie. Protected APIs verify the token before allowing access.
+
+
+10. Why store JWT in cookies instead of localStorage?
+
+Cookies can be configured as HTTP-only and secure, which reduces exposure to JavaScript-based token theft. This project uses cookie-based authentication with withCredentials enabled on Axios.
+
+
+11. What does userMiddleware do?
+
+userMiddleware protects user routes. It:
+
+1. Reads token from cookies.
+2. Verifies token using JWT_KEY.
+3. Finds the user in MongoDB.
+4. Optionally checks Redis token blocklist.
+5. Attaches user data to req.result.
+6. Allows the request to continue.
+
+
+12. What does adminMiddleware do?
+
+adminMiddleware protects admin-only routes. It verifies the JWT token, checks if the user exists, and confirms that the role is admin before allowing access to admin APIs.
+
+
+13. What is Redis used for in this project?
+
+Redis is used for token blocklisting during logout. Since JWTs are stateless, they normally remain valid until expiry. By storing logged-out tokens in Redis until their expiry time, the backend can reject those tokens early.
+
+
+14. What happened with Redis in this project?
+
+The Redis host failed with an ENOTFOUND error, meaning the old Redis database endpoint was no longer resolvable. This usually happens if the Redis Cloud database is deleted, suspended, or its endpoint changes after inactivity.
+
+
+15. Is MongoDB deleted or Redis deleted?
+
+From the runtime check, MongoDB connected successfully and printed "DB Connected". Redis failed with a DNS error. So the current confirmed issue is Redis, not MongoDB.
+
+
+16. How did you fix the signup "nothing happens" issue?
+
+Two improvements were made:
+
+1. Frontend signup/login pages now display auth error messages.
+2. Backend no longer stops completely if Redis is unavailable. It starts the server and skips Redis blocklist checks when Redis is not ready.
+
+This makes the actual error visible and prevents Redis failure from blocking registration/login.
+
+
+17. What database is used?
+
+MongoDB is used as the main database, and Mongoose is used as the ODM to define schemas and interact with collections.
+
+
+18. What are the main MongoDB models?
+
+Main models are:
+
+- User
+- Problem
+- Submission
+- Note
+- Discussion
+- UserSolution
+- Editorial
+- SolutionVideo
+
+
+19. What does the User model store?
+
+It stores user profile and authentication data, including firstName, lastName, emailId, username, bio, age, password, role, solved problems, auth provider, and email verification fields.
+
+
+20. What does the Problem model store?
+
+It stores problem title, description, difficulty, tags, visible test cases, hidden test cases, starter code, problem creator, and reference solutions.
+
+
+21. What is the difference between visible and hidden test cases?
+
+Visible test cases are shown to users and are used when they click Run. Hidden test cases are not shown and are used when users submit their final solution.
+
+
+22. How does code execution work?
+
+Code execution uses Judge0.
+
+Flow:
+
+1. Frontend sends code, language, and problem id.
+2. Backend fetches test cases from MongoDB.
+3. Backend sends batch submissions to Judge0.
+4. Judge0 returns tokens.
+5. Backend polls Judge0 using those tokens.
+6. Backend returns execution results to frontend.
+
+
+23. Why use Judge0 instead of executing code on your own server?
+
+Executing user code directly on the backend is risky because it can cause security issues, infinite loops, server overload, and system access problems. Judge0 provides isolated and safer code execution.
+
+
+24. What languages are supported?
+
+The project supports:
+
+- C++
+- Java
+- JavaScript
+
+Judge0 language IDs are mapped in problemUtility.js.
+
+
+25. What is the difference between Run and Submit?
+
+Run:
+Tests code against visible test cases and does not save a final submission result.
+
+Submit:
+Tests code against hidden test cases, stores the submission in MongoDB, and updates solved problems if accepted.
+
+
+26. How is a problem marked as solved?
+
+When submitted code passes all hidden test cases, the backend marks the submission as accepted and adds the problem id to the user's problemSolved array.
+
+
+27. How does the AI assistant work?
+
+The AI assistant uses Google Gemini. The backend sends the current problem title, description, examples, starter code, selected language, and chat messages to Gemini. The assistant is instructed to answer only DSA/coding-related questions.
+
+
+28. Why send problem context to the AI assistant?
+
+Problem context allows the AI to give relevant hints, debug help, complexity analysis, and solution guidance based on the exact problem the user is solving.
+
+
+29. What is Monaco Editor?
+
+Monaco Editor is the code editor that powers VS Code. In this project, it gives users a professional coding experience with syntax highlighting and editor features.
+
+
+30. How are notes implemented?
+
+Notes are user-specific and problem-specific. Each note is connected to a user and a problem. Users can create, update, list, and delete notes through protected /notes APIs.
+
+
+31. How are discussions implemented?
+
+Discussions are attached to problems. Users can create discussions, reply to discussions, upvote/downvote, and delete discussions. Replies are stored as discussion documents connected to a parent discussion.
+
+
+32. How are community solutions implemented?
+
+Users can post their own solutions for a problem. Other users can view, vote, comment, and learn from those solutions.
+
+
+33. What is the purpose of editorials?
+
+Editorials provide official explanations and approaches for problems. They help users understand the correct logic after trying the problem.
+
+
+34. How does the profile system work?
+
+The profile system fetches public user data using username. It calculates solved count, total submissions, accepted submissions, success rate, difficulty counts, global rank, recent submissions, and activity heatmap data.
+
+
+35. How is activity heatmap data calculated?
+
+The backend aggregates submissions by date using MongoDB aggregation. It returns date-wise counts, which the frontend displays as a heatmap.
+
+
+36. How is global rank calculated?
+
+The backend counts distinct accepted problems per user, sorts users by solved count, and finds the current user's position.
+
+
+37. What is Cloudinary used for?
+
+Cloudinary is used for uploading and storing solution videos. Admins can upload problem explanation videos, and the backend stores video metadata in MongoDB.
+
+
+38. Why use signed Cloudinary uploads?
+
+Signed uploads are more secure because the backend generates a signature using Cloudinary credentials. The frontend can upload directly to Cloudinary without exposing the API secret.
+
+
+39. What are protected routes in the frontend?
+
+Protected frontend routes are pages that require authentication. For example, /problems and /problems/:id require the user to be logged in. Admin routes require the user role to be admin.
+
+
+40. How is form validation handled?
+
+Frontend validation is handled using Zod with React Hook Form. Backend also validates data using validator.js and Mongoose schema validation.
+
+
+41. Why validate on both frontend and backend?
+
+Frontend validation improves user experience by showing quick errors. Backend validation is required for security because users can bypass frontend validation and call APIs directly.
+
+
+42. What is CORS and why is it used?
+
+CORS controls which frontend origins can call the backend. The backend allows requests from FRONTEND_URL and enables credentials so cookies can be sent with API requests.
+
+
+43. What is withCredentials: true?
+
+withCredentials: true tells Axios to include cookies in cross-origin API requests. It is required because JWT is stored in cookies.
+
+
+44. What are the important environment variables?
+
+Important variables are:
+
+- VITE_API_BASE_URL
+- PORT
+- DB_CONNECTION_STRING
+- JWT_KEY
+- FRONTEND_URL
+- REDIS_HOST
+- REDIS_PORT
+- REDIS_PD
+- JUDGE0_KEY
+- JUDGE0_URL
+- JUDGE0_HOST
+- GEMINI_API_KEY
+- CLOUDINARY credentials
+- Email service credentials
+
+
+45. What is the role of Redux async thunks?
+
+Redux async thunks handle asynchronous API operations like login, register, logout, check auth, update profile, send OTP, verify email, and manage users. They provide pending, fulfilled, and rejected states.
+
+
+46. How does the app check if a user is already logged in?
+
+In App.jsx, useEffect dispatches checkAuth on app load. The backend verifies the JWT cookie and returns user data if the token is valid.
+
+
+47. What happens when authentication fails?
+
+The Redux auth state sets isAuthenticated to false, clears the user, and stores an error message. Protected routes redirect the user to login.
+
+
+48. What was a frontend bug in signup error handling?
+
+registerUser rejected with a string error, but the reducer was trying to read action.payload?.message. Since payload was a string, the useful message was lost. Also, SignUp.jsx did not display auth.error. This made failures look like "nothing happens."
+
+
+49. How was that bug fixed?
+
+authSlice now normalizes error messages using getErrorMessage, and SignUp.jsx/Login.jsx display auth.error below the button.
+
+
+50. Why should backend not depend completely on Redis startup?
+
+Redis is helpful for logout token blocklisting, but core features like signup, login, and problem browsing depend mainly on MongoDB. If Redis is temporarily down, the whole server should not crash. It should start with limited blocklist functionality.
+
+
+51. What are the main APIs in this project?
+
+Main API groups:
+
+- /user for auth and account management
+- /problem for problem CRUD and problem data
+- /submission for run and submit
+- /ai for AI chat
+- /notes for private notes
+- /discussion for discussions
+- /solutions for community solutions
+- /editorial for editorials
+- /video for solution videos
+- /profile for public profiles and stats
+
+
+52. What is the admin problem creation flow?
+
+1. Admin enters problem data.
+2. Backend receives problem details and reference solutions.
+3. Backend runs reference solutions against visible test cases using Judge0.
+4. If all pass, problem is saved.
+5. If any fail, problem creation is rejected.
+
+
+53. Why validate reference solutions before saving a problem?
+
+It ensures that the official solution is correct and that the test cases are valid. This prevents broken problems from being added to the platform.
+
+
+54. What are some security features in this project?
+
+- Password hashing with bcrypt
+- JWT authentication
+- Cookie-based auth
+- Protected backend routes
+- Admin middleware
+- CORS origin restriction
+- Redis token blocklist for logout
+- Signed Cloudinary uploads
+- Frontend and backend validation
+
+
+55. What are possible security improvements?
+
+Possible improvements:
+
+- Use HTTP-only cookies explicitly.
+- Add refresh tokens.
+- Add rate limiting.
+- Add request sanitization.
+- Add stronger error handling.
+- Add CSRF protection for cookie-based auth.
+- Add API logging and monitoring.
+
+
+56. What are possible performance improvements?
+
+Possible improvements:
+
+- Add pagination for problem lists.
+- Cache frequently used problem data.
+- Add code splitting in frontend.
+- Optimize large bundle size.
+- Improve database indexes.
+- Use aggregation carefully for ranking.
+- Queue long-running code submissions.
+
+
+57. What are possible future features?
+
+Future features:
+
+- Leaderboard page
+- Problem bookmarks
+- Code autosave
+- Contest mode
+- Google sign-in completion
+- More programming languages
+- Better AI hint levels
+- Docker setup
+- Unit and integration tests
+- Admin analytics dashboard
+
+
+58. What was the biggest challenge in this project?
+
+One major challenge is integrating multiple external services together: Judge0 for code execution, Gemini for AI, Cloudinary for videos, MongoDB for data, Redis for token blocklisting, and keeping all flows connected through a smooth React UI.
+
+
+59. How would you explain this project in one minute?
+
+SOLVIX is a full-stack coding practice platform where users can solve DSA problems, run and submit code, get AI-powered hints, maintain notes, discuss problems, share solutions, and track progress through profiles and activity stats. The frontend is built with React, Redux, Tailwind, and Monaco Editor. The backend is built with Express, MongoDB, JWT authentication, Judge0 for code execution, Gemini for AI help, Redis for token blocklisting, and Cloudinary for solution videos. Admins can manage problems and upload editorial videos.
+
+
+60. Why is this project good for your portfolio?
+
+It is not a simple CRUD app. It demonstrates real-world full-stack skills: authentication, authorization, database modeling, API design, code execution integration, AI integration, file/video upload, user analytics, role-based admin tools, and debugging production-like environment issues.

@@ -1,0 +1,607 @@
+SOLVIX PRESENTATION GUIDE
+=========================
+
+Use this file while giving your presentation. It contains the important points, demo order, and speaking lines.
+
+
+1. OPENING INTRODUCTION
+-----------------------
+
+Good morning/afternoon everyone.
+
+My project name is SOLVIX.
+
+SOLVIX is a full-stack competitive programming and coding practice platform. It helps users solve coding problems, run and submit code, get AI-powered help, write notes, discuss problems, share solutions, and track their progress.
+
+It is inspired by coding platforms like LeetCode, but my focus is not only on problem solving. My focus is to build a complete learning environment where students can practice, understand, revise, and improve.
+
+
+2. PROBLEM STATEMENT
+--------------------
+
+Many students use different tools while learning DSA:
+
+- A coding platform for problems.
+- A code editor for writing code.
+- An AI tool for hints.
+- A notes app for revision.
+- A discussion forum for doubts.
+- A separate profile or tracker for progress.
+
+This creates a fragmented learning experience.
+
+SOLVIX solves this by combining all these features into one platform.
+
+
+3. ONE-LINE PROJECT SUMMARY
+---------------------------
+
+SOLVIX is an AI-powered coding practice platform where users can solve DSA problems, execute code, get guided help, maintain notes, join discussions, and track their coding journey.
+
+
+4. HOW SOLVIX IS DIFFERENT FROM LEETCODE
+----------------------------------------
+
+LeetCode mainly focuses on problem solving and interview preparation at a very large scale.
+
+SOLVIX is different because it is built as a personalized learning platform.
+
+Extra features in SOLVIX:
+
+- AI assistant connected to the current problem context.
+- Private problem-wise notes.
+- Discussion system.
+- Community solutions.
+- Activity heatmap.
+- Public profile statistics.
+- Admin-created problems.
+- Admin-uploaded solution videos.
+- Reference solution validation before saving a problem.
+- Complete owner-controlled frontend, backend, database, and API system.
+
+So SOLVIX is not just a judge platform. It is a complete learning workspace.
+
+
+5. WHY PEOPLE WOULD USE SOLVIX
+------------------------------
+
+People would use SOLVIX because it gives everything in one place.
+
+Users can:
+
+- Read a problem.
+- Write code.
+- Run code.
+- Submit code.
+- Ask AI for hints.
+- Save notes.
+- Read editorials.
+- Watch solution videos.
+- Discuss with others.
+- Track progress.
+
+This is especially useful for students and beginners because they need guidance and revision support, not only accepted or wrong answer results.
+
+
+6. TECH STACK
+-------------
+
+Frontend:
+
+- React
+- Vite
+- Redux Toolkit
+- Tailwind CSS
+- React Router
+- React Hook Form
+- Zod
+- Monaco Editor
+- Axios
+
+Backend:
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT
+- bcrypt
+- Redis
+- cookie-parser
+- CORS
+
+External Services:
+
+- Judge0 for code execution
+- Google Gemini for AI assistant
+- Cloudinary for solution videos
+- Email/OTP service for email verification
+
+
+7. PROJECT ARCHITECTURE
+-----------------------
+
+The project has two main parts:
+
+frontend/
+  React application used by users and admins.
+
+backend/
+  Express API server that handles authentication, problems, submissions, AI chat, notes, discussions, profiles, and admin operations.
+
+Basic request flow:
+
+User performs action in React
+-> Frontend calls backend using Axios
+-> Express route receives request
+-> Middleware verifies user if needed
+-> Controller performs logic
+-> MongoDB stores or fetches data
+-> External APIs may be called
+-> Backend sends response
+-> React updates the UI
+
+
+8. IMPORTANT FRONTEND MODULES
+-----------------------------
+
+App.jsx
+  Handles routes and protected pages.
+
+authSlice.js
+  Handles authentication state using Redux Toolkit.
+
+axiosClient.js
+  Central Axios configuration. It uses VITE_API_BASE_URL and sends cookies with requests.
+
+SignUp.jsx
+  Handles user registration form with Zod validation.
+
+Login.jsx
+  Handles user login.
+
+HomePage.jsx
+  Shows problem list, filters, search, solved count, and difficulty tags.
+
+ProblemEditor.jsx
+  Main coding workspace with Monaco Editor, run/submit buttons, AI chat, notes, editorial, discussion, and solutions.
+
+UserProfile.jsx
+  Shows public profile, stats, activity heatmap, and email/password features.
+
+Admin components
+  Allow admin to create, update, delete problems and manage videos/users.
+
+
+9. IMPORTANT BACKEND MODULES
+----------------------------
+
+index.js
+  Main Express server file.
+
+config/db.js
+  Connects to MongoDB.
+
+config/redis.js
+  Connects to Redis.
+
+routes/
+  Defines API endpoints.
+
+controllers/
+  Contains business logic.
+
+models/
+  Contains MongoDB schemas.
+
+middleware/userMiddleware.js
+  Protects user routes using JWT.
+
+middleware/adminMiddleware.js
+  Protects admin routes.
+
+
+10. AUTHENTICATION FLOW
+-----------------------
+
+Registration flow:
+
+1. User enters name, email, and password.
+2. Frontend validates data using Zod.
+3. Frontend sends POST /user/register.
+4. Backend validates data again.
+5. Password is hashed using bcrypt.
+6. User is stored in MongoDB.
+7. JWT token is generated.
+8. Token is sent in a cookie.
+9. Frontend stores user in Redux.
+10. User is redirected to problems page.
+
+Login flow:
+
+1. User enters email and password.
+2. Backend checks if user exists.
+3. bcrypt compares password.
+4. JWT token is generated.
+5. Cookie is sent to frontend.
+6. User becomes authenticated.
+
+Why bcrypt?
+  It securely hashes passwords, so actual passwords are never stored.
+
+Why JWT?
+  It helps verify authenticated users without storing session data in the database.
+
+Why cookies?
+  Cookies allow the backend to send and receive the token automatically with requests.
+
+
+11. PROBLEM LIST FLOW
+---------------------
+
+The problem list page fetches:
+
+GET /problem/getAllProblems
+GET /problem/problemSolvedByUser
+
+It shows:
+
+- Total problems
+- Solved problems
+- Search
+- Difficulty filter
+- Tag filter
+- Solved/unsolved filter
+
+
+12. PROBLEM EDITOR FLOW
+-----------------------
+
+When a user opens a problem:
+
+1. Frontend calls GET /problem/problemById/:id.
+2. Backend returns title, description, test cases, starter code, and video/editorial data if available.
+3. User writes code in Monaco Editor.
+4. User can run or submit code.
+5. User can also open AI chat, notes, discussion, editorial, and solutions.
+
+
+13. HOW CODE EXECUTION WORKS USING JUDGE0
+-----------------------------------------
+
+Judge0 is used for safe code execution.
+
+Flow:
+
+1. User writes code in Monaco Editor.
+2. User clicks Run or Submit.
+3. Frontend sends code, language, and problem id to backend.
+4. Backend fetches test cases from MongoDB.
+5. Backend maps language to Judge0 language id.
+6. Backend sends source code, input, expected output, and language id to Judge0.
+7. Judge0 returns execution tokens.
+8. Backend polls Judge0 using those tokens.
+9. Judge0 returns output, status, runtime, memory, and errors.
+10. Backend sends final result to frontend.
+
+Run:
+  Uses visible test cases and does not save final accepted result.
+
+Submit:
+  Uses hidden test cases and stores submission result in MongoDB.
+
+Supported languages:
+
+- C++
+- Java
+- JavaScript
+
+
+14. AI ASSISTANT FLOW
+---------------------
+
+The AI assistant uses Google Gemini.
+
+When user asks a doubt:
+
+1. Frontend sends user message and current problem context.
+2. Backend sends that context to Gemini.
+3. Context includes:
+   - Problem title
+   - Problem description
+   - Test cases
+   - Starter code
+   - Selected language
+   - Chat history
+4. Gemini returns a hint, explanation, debugging help, or solution guidance.
+
+Important point:
+  The AI is instructed to stay focused only on DSA and the current coding problem.
+
+
+15. NOTES FEATURE
+-----------------
+
+Users can write private notes for each problem.
+
+Purpose:
+
+- Helps in revision.
+- Helps users remember approaches.
+- Makes the platform more learning-focused.
+
+APIs:
+
+GET /notes
+GET /notes/:problemId
+POST /notes/:problemId
+DELETE /notes/:problemId
+
+
+16. DISCUSSION FEATURE
+----------------------
+
+Users can:
+
+- Create discussions.
+- Reply to discussions.
+- Upvote or downvote.
+- Delete their discussions.
+
+Purpose:
+  Helps users learn collaboratively and clear doubts around a specific problem.
+
+
+17. COMMUNITY SOLUTIONS
+-----------------------
+
+Users can share their own solutions for a problem.
+
+Other users can:
+
+- Read solutions.
+- Vote.
+- Comment.
+
+Purpose:
+  Helps users learn alternate approaches.
+
+
+18. EDITORIALS AND VIDEO SOLUTIONS
+----------------------------------
+
+Editorials:
+  Written explanations for problems.
+
+Video solutions:
+  Uploaded by admin using Cloudinary.
+
+Video upload flow:
+
+1. Admin selects a problem.
+2. Backend creates signed Cloudinary upload data.
+3. Frontend uploads video to Cloudinary.
+4. Backend verifies uploaded video.
+5. Video metadata is saved in MongoDB.
+
+
+19. PROFILE AND ACTIVITY SYSTEM
+-------------------------------
+
+Profile page shows:
+
+- Username
+- Name
+- Bio
+- Email verification status
+- Joined date
+- Solved count
+- Total submissions
+- Accepted submissions
+- Success rate
+- Difficulty-wise solved count
+- Global rank
+- Recent submissions
+- Activity heatmap
+
+Activity heatmap:
+  Backend groups submissions by date using MongoDB aggregation.
+
+Global rank:
+  Backend counts distinct accepted problems per user and ranks users by solved count.
+
+
+20. ADMIN PANEL
+---------------
+
+Admin can:
+
+- Create problems
+- Update problems
+- Delete problems
+- Upload videos
+- Delete videos
+- View video library
+- Manage users
+- Create another admin
+
+Important feature:
+  Before saving a problem, backend validates reference solutions using Judge0. If reference solution fails, the problem is not saved.
+
+
+21. DATABASE MODELS
+-------------------
+
+Important MongoDB models:
+
+User:
+  Stores user account, role, password hash, profile, solved problems, and email verification.
+
+Problem:
+  Stores problem details, test cases, starter code, and reference solutions.
+
+Submission:
+  Stores submitted code, language, result, runtime, memory, and test case count.
+
+Note:
+  Stores private user notes for problems.
+
+Discussion:
+  Stores discussions, replies, likes, and dislikes.
+
+UserSolution:
+  Stores shared user solutions.
+
+Editorial:
+  Stores official explanations.
+
+SolutionVideo:
+  Stores Cloudinary video metadata.
+
+
+22. SECURITY FEATURES
+---------------------
+
+- Password hashing with bcrypt.
+- JWT authentication.
+- Cookie-based auth.
+- Protected user routes.
+- Protected admin routes.
+- Role-based authorization.
+- CORS configuration.
+- Backend validation.
+- Frontend validation.
+- Redis token blocklist support.
+- Signed Cloudinary upload flow.
+
+
+23. CURRENT REDIS ISSUE EXPLANATION
+-----------------------------------
+
+During checking, MongoDB connected successfully.
+
+Redis failed with this type of error:
+
+getaddrinfo ENOTFOUND redis-16805.crce292.ap-south-1-2.ec2.cloud.redislabs.com
+
+Meaning:
+  The Redis host could not be found.
+
+Most likely reason:
+  The old Redis Cloud database was deleted, suspended, renamed, or its endpoint changed after 3 to 4 months of inactivity.
+
+Impact:
+  Redis is mainly used for logout token blocklisting.
+
+Fix:
+  Create a new Redis database and update:
+
+- REDIS_HOST
+- REDIS_PORT
+- REDIS_PD
+
+Temporary improvement:
+  Backend was changed so it can still start when Redis is unavailable. Auth and signup can work as long as MongoDB is connected.
+
+
+24. WHY SIGNUP LOOKED LIKE NOTHING HAPPENED
+-------------------------------------------
+
+The signup button was dispatching the registerUser action correctly.
+
+But:
+
+1. Backend was not starting properly when Redis failed.
+2. Frontend was not showing auth.error on the signup page.
+3. authSlice was not correctly displaying string error messages.
+
+Fix:
+
+- Signup/Login pages now show errors.
+- authSlice now normalizes backend errors.
+- Backend starts even if Redis is down.
+
+
+25. DEMO ORDER
+--------------
+
+Follow this order during demo:
+
+1. Show landing page.
+2. Explain project idea.
+3. Show signup/login.
+4. Show problem list.
+5. Use search and filters.
+6. Open one problem.
+7. Show problem description and test cases.
+8. Show Monaco code editor.
+9. Click Run and explain visible test cases.
+10. Click Submit and explain hidden test cases.
+11. Show AI assistant.
+12. Show notes.
+13. Show discussion/solutions.
+14. Show profile and activity heatmap.
+15. Show admin panel.
+16. Explain backend architecture.
+17. Explain Judge0 and Gemini integration.
+18. Explain Redis issue and fix.
+19. Conclude with future improvements.
+
+
+26. SHORT 2-MINUTE SCRIPT
+-------------------------
+
+SOLVIX is a full-stack AI-powered coding practice platform. The goal of this project is to provide students with a complete environment for learning DSA. Users can register, log in, browse problems, solve them in a Monaco code editor, run code against sample test cases, submit code against hidden test cases, and track their progress.
+
+The frontend is built using React, Vite, Redux Toolkit, Tailwind CSS, React Hook Form, Zod, and Monaco Editor. The backend is built using Node.js, Express.js, MongoDB, Mongoose, JWT, bcrypt, and Redis.
+
+For code execution, I integrated Judge0. When the user clicks Run or Submit, the backend sends code and test cases to Judge0, receives execution results, and sends them back to the frontend.
+
+I also integrated Google Gemini as an AI assistant. The AI gets the current problem context, so it can provide hints, debugging help, approaches, and complexity analysis.
+
+The project also includes notes, discussions, community solutions, editorials, profile statistics, activity heatmap, and an admin panel for managing problems and videos.
+
+Overall, SOLVIX is not just a coding judge. It is a complete learning platform that combines coding practice, AI guidance, revision, collaboration, and progress tracking.
+
+
+27. IMPORTANT INTERVIEW POINTS TO REMEMBER
+------------------------------------------
+
+- This is a full-stack project, not only frontend.
+- Authentication uses JWT and bcrypt.
+- Code execution is safely handled by Judge0.
+- AI assistant uses Gemini with problem context.
+- MongoDB stores users, problems, submissions, notes, discussions, solutions, editorials, and video metadata.
+- Redis is used for token blocklisting after logout.
+- Cloudinary is used for video uploads.
+- Admin has role-based access.
+- Reference solutions are validated before problem creation.
+- Frontend errors were improved so signup failures are visible.
+- Redis failure was identified and handled gracefully.
+
+
+28. FUTURE IMPROVEMENTS
+-----------------------
+
+Future improvements:
+
+- Add leaderboard page.
+- Add contest mode.
+- Add code autosave.
+- Add bookmarks.
+- Add refresh token system.
+- Add rate limiting.
+- Add CSRF protection.
+- Add Docker setup.
+- Add unit and integration tests.
+- Add more programming languages.
+- Improve AI hint levels.
+- Improve discussion ranking.
+- Add admin analytics.
+
+
+29. CLOSING LINE
+----------------
+
+To conclude, SOLVIX demonstrates a complete full-stack application with authentication, coding problem management, secure code execution, AI assistance, progress tracking, admin tools, and multiple third-party integrations. It is designed to make coding practice more guided, interactive, and useful for students.
+
